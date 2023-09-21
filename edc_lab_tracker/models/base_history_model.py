@@ -38,7 +38,7 @@ class BaseHistoryModel(BaseUuidModel):
                                           'dashboard_model': 'registered_subject',
                                           'dashboard_id': self.get_registered_subject().pk,
                                           'show': 'appointments'})
-                    ret = """<a href="{url}" />dashboard</a>""".format(url=url)
+                ret = """<a href="{url}" />dashboard</a>""".format(url=url)
         return ret
     dashboard.allow_tags = True
 
