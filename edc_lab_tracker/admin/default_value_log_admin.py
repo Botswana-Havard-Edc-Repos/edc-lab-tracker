@@ -10,4 +10,6 @@ class DefaultValueLogAdmin(BaseModelAdmin):
     search_fields = ('subject_identifier', 'error_message')
     list_filter = ('group_name', 'subject_type', 'modified')
     date_hierarchy = 'value_datetime'
+
+
 admin.site.register(DefaultValueLog, DefaultValueLogAdmin)
