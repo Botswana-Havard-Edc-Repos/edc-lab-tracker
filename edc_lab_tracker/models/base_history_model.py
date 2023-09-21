@@ -35,9 +35,11 @@ class BaseHistoryModel(BaseUuidModel):
             if self.get_registered_subject().subject_identifier:
                 url = reverse('subject_dashboard_url',
                               kwargs={'dashboard_type': self.get_registered_subject().subject_type.lower(),
-                              'dashboard_model': 'registered_subject',
-                              'dashboard_id': self.get_registered_subject().pk,
-                              'show': 'appointments'})
+                                      'dashboard_model': 'registered_subject',
+                                      'dashboard_id': self.get_registered_subject().pk,
+                                      'show': 'appointments'
+                                     }
+                             )
                 ret = """<a href="{url}" />dashboard</a>""".format(url=url)
         return ret
     dashboard.allow_tags = True
