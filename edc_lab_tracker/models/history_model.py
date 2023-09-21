@@ -24,5 +24,8 @@ class HistoryModel(BaseHistoryModel):
              'subject_identifier', 'value_datetime', 'group_name'],
             ]
 
-# alter table bhp_lab_tracker_historymodel add INDEX (`subject_identifier`, `value_datetime`, `group_name`);
-# alter table bhp_lab_tracker_historymodel add INDEX (`subject_type`, `source_app_label`, `source_identifier`, `test_code`, `subject_identifier`, `value_datetime`, `group_name`);
+# alter table bhp_lab_tracker_historymodel add INDEX
+# (`subject_identifier`, `value_datetime`, `group_name`);
+# alter table bhp_lab_tracker_historymodel add INDEX (`subject_type`,
+#`source_app_label`, `source_identifier`, `test_code`, `subject_identifier`, 
+#`value_datetime`, `group_name`);
