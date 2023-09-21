@@ -34,7 +34,8 @@ class LabTracker(object):
           Must be unique for each type of value being tracked. For example: 'HIV'.
 
     Optional class attributes to be defined on the subclass:
-        * trackers: a list of tuples where the containing tuple defines (model_cls, value_attr, date_attr).
+        * trackers: a list of tuples where the containing tuple defines 
+        (model_cls, value_attr, date_attr).
           Use this attribute to include models from your app that capture values not captured in
           model :class:`lab_clinic_api.models.ResultItem`.
 
@@ -212,7 +213,8 @@ class LabTracker(object):
         if not isinstance(self.subject_type, str):
             raise ImproperlyConfigured(
                 'Attribute _subject_type must be a string. Got {0}. Specify'
-                ' at the class declaration (e.g. subject_type = \'infant\''.format(self._subject_type))
+                ' at the class declaration (e.g. subject_type ='
+                ' \'infant\''.format(self._subject_type))
 
     def get_subject_type(self):
         if not self._subject_type:
@@ -325,7 +327,8 @@ class LabTracker(object):
                     for field in tracker.model_cls._meta.fields:
                         if isinstance(field, (ForeignKey, OneToOneField)):
                             if issubclass(field.rel.to, VisitModelMixin):
-                                query_string = '{visit_field}__appointment__registered_subject__subject_identifier'.format(
+                                query_string = '{visit_field}'
+                                '__appointment__registered_subject__subject_identifier'.format(
                                     visit_field=field.name)
                                 break
                 if not query_string:
