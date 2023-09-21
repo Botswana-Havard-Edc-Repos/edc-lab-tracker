@@ -4,6 +4,7 @@ max-line-length = 100
 
 exclude =
   migrations,
+  doc,
   tests,
   __pycache__,
   manage.py,
