@@ -10,4 +10,6 @@ class HistoryModelErrorAdmin(BaseModelAdmin):
     search_fields = ('subject_identifier', 'value', 'error_message')
     list_filter = ('group_name', 'source_model_name', 'source_app_label', 'test_code', 'modified')
     date_hierarchy = 'value_datetime'
+
+
 admin.site.register(HistoryModelError, HistoryModelErrorAdmin)
