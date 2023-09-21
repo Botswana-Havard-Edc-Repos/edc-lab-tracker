@@ -429,10 +429,10 @@ class LabTracker(object):
               in the same format as the :class:`ResultItem` model.
 
             For example:
-                {'A': 'POS', 'B': NEG} will store POS and NEG given A, B. POS, 
+                {'A': 'POS', 'B': NEG} will store POS and NEG given A, B. POS,
                 NEG is how it is stored in the :class:`ResultItem` model.
 
-            Also, the map is inverted to generate a string of values 
+            Also, the map is inverted to generate a string of values
             using this map returning 'AB' instead of 'POSNEG'.
 
             Users may override."""
@@ -443,7 +443,8 @@ class LabTracker(object):
         if not self._tracked_test_codes:
             raise ImproperlyConfigured(
                 'Class attribute \'tracked_test_codes\' may not be None. Should be a test code or'
-                'tuple of test codes. Set \'tracked_test_codes\' in the class declaration for {0}'.format(self))
+                'tuple of test codes. Set \'tracked_test_codes\' '
+                'in the class declaration for {0}'.format(self))
         if not isinstance(self._tracked_test_codes, (list, tuple)):
             self._tracked_test_codes = (self._tracked_test_codes, )
 
