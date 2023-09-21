@@ -18,6 +18,8 @@ logger = logging.getLogger(__name__)
 class NullHandler(logging.Handler):
     def emit(self, record):
         pass
+
+
 nullhandler = logger.addHandler(NullHandler())
 
 
@@ -180,7 +182,8 @@ class LabTracker(object):
                 if item in inv_display_map:
                     retlst.append(inv_display_map[item][0].lower())
                 else:
-                    retlst.append(item)  # value not in map, so just append the value, almost an error...
+                    # value not in map, so just append the value, almost an error...
+                    retlst.append(item)
             else:
                 retlst.append(item)
         return ''.join(retlst)
@@ -196,9 +199,11 @@ class LabTracker(object):
     def set_subject_type(self, value=None):
         self._subject_type = value or self.subject_type
         if not self._subject_type:
-            raise ImproperlyConfigured('Attribute _subject_type may not be None. Specify at the class declaration (e.g. subject_type = \'infant\'. See tracker {0}'.format(self))
+            raise ImproperlyConfigured(
+                'Attribute _subject_type may not be None. Specify at the class declaration (e.g. subject_type = \'infant\'. See tracker {0}'.format(self))
         if not isinstance(self.subject_type, basestring):
-            raise ImproperlyConfigured('Attribute _subject_type must be a string. Got {0}. Specify at the class declaration (e.g. subject_type = \'infant\''.format(self._subject_type))
+            raise ImproperlyConfigured(
+                'Attribute _subject_type must be a string. Got {0}. Specify at the class declaration (e.g. subject_type = \'infant\''.format(self._subject_type))
 
     def get_subject_type(self):
         if not self._subject_type:
@@ -219,14 +224,18 @@ class LabTracker(object):
                 tracker.extend([None for x in xrange(len(tracker), len(TrackerNamedTpl._fields))])
                 tracker = TrackerNamedTpl(*tracker)
             if not issubclass(tracker.model_cls, models.Model):
-                raise ImproperlyConfigured('tracker tuple element \'model_cls\' must be a Model class. Got {0}'.format(tracker.model_cls))
+                raise ImproperlyConfigured(
+                    'tracker tuple element \'model_cls\' must be a Model class. Got {0}'.format(tracker.model_cls))
             if not isinstance(tracker.value_attr, basestring):
-                raise ImproperlyConfigured('tracker tuple element \'value_attr\' must be a string. Got {0}'.format(tracker.value_attr))
+                raise ImproperlyConfigured(
+                    'tracker tuple element \'value_attr\' must be a string. Got {0}'.format(tracker.value_attr))
             if not isinstance(tracker.datetime_attr, basestring):
-                raise ImproperlyConfigured('tracker tuple element \'datetime_attr\' must be a string. Got {0}'.format(tracker.datetime_attr))
+                raise ImproperlyConfigured(
+                    'tracker tuple element \'datetime_attr\' must be a string. Got {0}'.format(tracker.datetime_attr))
             if tracker.identifier_attr:
                 if not isinstance(tracker.identifier_attr, basestring):
-                    raise ImproperlyConfigured('tracker tuple element \'identifier_attr\' must be a string. Got {0}'.format(tracker.identifier_attr))
+                    raise ImproperlyConfigured(
+                        'tracker tuple element \'identifier_attr\' must be a string. Got {0}'.format(tracker.identifier_attr))
             self._trackers.append(tracker)
 
     def get_trackers(self):
@@ -248,7 +257,8 @@ class LabTracker(object):
     def set_group_name(self):
         self._group_name = self.group_name
         if not self._group_name:
-            raise ImproperlyConfigured('Attribute \'_group_name\' cannot be None. Set \'group_name\' as a class attribute in the class declaration')
+            raise ImproperlyConfigured(
+                'Attribute \'_group_name\' cannot be None. Set \'group_name\' as a class attribute in the class declaration')
 
     def get_group_name(self):
         if not self._group_name:
@@ -301,14 +311,16 @@ class LabTracker(object):
                     for field in tracker.model_cls._meta.fields:
                         if isinstance(field, (ForeignKey, OneToOneField)):
                             if issubclass(field.rel.to, VisitModelMixin):
-                                query_string = '{visit_field}__appointment__registered_subject__subject_identifier'.format(visit_field=field.name)
+                                query_string = '{visit_field}__appointment__registered_subject__subject_identifier'.format(
+                                    visit_field=field.name)
                                 break
                 if not query_string:
                     raise TypeError(('Missing subject_identifier attribute or a relation to one. The model class {0} is'
                                     ' not a subclass of VisitModelMixin and nor does it have a relation to RegisteredSubject.').format(tracker.model_cls._meta.object_name))
                 options = {query_string: self.get_subject_identifier()}
             if not options:
-                raise TypeError('Unable to determine the query options for tracker \'{0}\'.'.format(tracker))
+                raise TypeError(
+                    'Unable to determine the query options for tracker \'{0}\'.'.format(tracker))
             self._history_query_options.update({tracker: options})
 
     def _get_history_query_options(self, tracker):
@@ -321,7 +333,8 @@ class LabTracker(object):
         for tracker in self.get_trackers():
             options = self._get_history_query_options(tracker)
             for model_inst in tracker.model_cls.objects.filter(**options):
-                HistoryUpdater(model_inst, self.get_group_name(), self.get_subject_type(), tracker=tracker, tracked_test_codes=self._get_tracked_test_codes()).update()
+                HistoryUpdater(model_inst, self.get_group_name(), self.get_subject_type(
+                ), tracker=tracker, tracked_test_codes=self._get_tracked_test_codes()).update()
 
     def set_value_datetime(self, value=None):
         """Sets value_datetime, None is allowed."""
@@ -398,7 +411,8 @@ class LabTracker(object):
             if display_map:
                 display_value = display_map.get(self.get_value(), None)
             if not display_value and not tracker.allow_null:
-                raise ValueError('Result value \'{0}\' did not match any value in the display map \'{1}\'.'.format(self.get_value(), display_map))
+                raise ValueError('Result value \'{0}\' did not match any value in the display map \'{1}\'.'.format(
+                    self.get_value(), display_map))
         return display_value
 
     def _get_display_map(self):
@@ -422,7 +436,8 @@ class LabTracker(object):
     def _set_tracked_test_codes(self):
         self._tracked_test_codes = self.tracked_test_codes
         if not self._tracked_test_codes:
-            raise ImproperlyConfigured('Class attribute \'tracked_test_codes\' may not be None. Should be a test code or tuple of test codes. Set \'tracked_test_codes\' in the class declaration for {0}'.format(self))
+            raise ImproperlyConfigured(
+                'Class attribute \'tracked_test_codes\' may not be None. Should be a test code or tuple of test codes. Set \'tracked_test_codes\' in the class declaration for {0}'.format(self))
         if not isinstance(self._tracked_test_codes, (list, tuple)):
             self._tracked_test_codes = (self._tracked_test_codes, )
 
