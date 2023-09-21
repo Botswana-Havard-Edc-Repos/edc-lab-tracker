@@ -136,7 +136,7 @@ class LabTracker(object):
         return self._value
 
     def set_history(self, order_desc=None):
-        """Sets to an ordered HistoryModel queryset for this subject filtered 
+        """Sets to an ordered HistoryModel queryset for this subject filtered
         for records on or before value_datetime."""
         self._history = None
         order_by = 'value_datetime'
@@ -167,7 +167,7 @@ class LabTracker(object):
         return [qs.value for qs in queryset]
 
     def get_history_as_string(self, reference_datetime, mapped=None):
-        """Returns a subject's qualitative values joined as a string in 
+        """Returns a subject's qualitative values joined as a string in
         ascending chronological order.
 
         Args:
@@ -331,8 +331,8 @@ class LabTracker(object):
                 if not query_string:
                     raise TypeError(('Missing subject_identifier attribute or a relation to one.'
                                      'The model class {0} is not a subclass of VisitModelMixin'
-                                     'and nor does it have a relation'
-                                    'to RegisteredSubject.').format(tracker.model_cls._meta.object_name))
+                                     'and nor does it have a relationto RegisteredSubject.'
+                                     ).format(tracker.model_cls._meta.object_name))
                 options = {query_string: self.get_subject_identifier()}
             if not options:
                 raise TypeError(
