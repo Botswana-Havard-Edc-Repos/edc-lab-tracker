@@ -21,7 +21,8 @@ class BaseHistoryModel(BaseUuidModel):
 
     def __unicode__(self):
         return '{0}-{1}-{2}-{3}-{4}-{5}'.format(self.subject_type, self.subject_identifier,
-                                                self.test_code, self.value, self.value_datetime, self.pk)
+                                                self.test_code, self.value, self.value_datetime,
+                                                self.pk)
 
     def get_registered_subject(self):
         from edc_registration.models import RegisteredSubject
@@ -34,7 +35,8 @@ class BaseHistoryModel(BaseUuidModel):
         if self.get_registered_subject():
             if self.get_registered_subject().subject_identifier:
                 url = reverse('subject_dashboard_url',
-                              kwargs={'dashboard_type': self.get_registered_subject().subject_type.lower(),
+                              kwargs={'dashboard_type': self.get_registered_subject().
+                                      subject_type.lower(),
                                       'dashboard_model': 'registered_subject',
                                       'dashboard_id': self.get_registered_subject().pk,
                                       'show': 'appointments'
