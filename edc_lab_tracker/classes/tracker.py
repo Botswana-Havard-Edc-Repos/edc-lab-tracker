@@ -1,15 +1,11 @@
 import logging
-
 from datetime import datetime
-
 from django.db.models import ForeignKey, OneToOneField, get_model
 from django.core.exceptions import ImproperlyConfigured
-
 from django.db import models
-
-
 from .helpers import TrackerNamedTpl
 from .history_updater import HistoryUpdater
+from ..models import HistoryModel, DefaultValueLog
 
 
 logger = logging.getLogger(__name__)
@@ -202,7 +198,7 @@ class LabTracker(object):
         if not self._subject_type:
             raise ImproperlyConfigured(
                 'Attribute _subject_type may not be None. Specify at the class declaration (e.g. subject_type = \'infant\'. See tracker {0}'.format(self))
-        if not isinstance(self.subject_type, basestring):
+        if not isinstance(self.subject_type, str):
             raise ImproperlyConfigured(
                 'Attribute _subject_type must be a string. Got {0}. Specify at the class declaration (e.g. subject_type = \'infant\''.format(self._subject_type))
 
@@ -222,19 +218,19 @@ class LabTracker(object):
             if not isinstance(tracker, TrackerNamedTpl):
                 # trackers are declared as tuples but must be named tuples, so convert
                 tracker = list(tracker)
-                tracker.extend([None for x in xrange(len(tracker), len(TrackerNamedTpl._fields))])
+                tracker.extend([None for x in range(len(tracker), len(TrackerNamedTpl._fields))])
                 tracker = TrackerNamedTpl(*tracker)
             if not issubclass(tracker.model_cls, models.Model):
                 raise ImproperlyConfigured(
                     'tracker tuple element \'model_cls\' must be a Model class. Got {0}'.format(tracker.model_cls))
-            if not isinstance(tracker.value_attr, basestring):
+            if not isinstance(tracker.value_attr, str):
                 raise ImproperlyConfigured(
                     'tracker tuple element \'value_attr\' must be a string. Got {0}'.format(tracker.value_attr))
-            if not isinstance(tracker.datetime_attr, basestring):
+            if not isinstance(tracker.datetime_attr, str):
                 raise ImproperlyConfigured(
                     'tracker tuple element \'datetime_attr\' must be a string. Got {0}'.format(tracker.datetime_attr))
             if tracker.identifier_attr:
-                if not isinstance(tracker.identifier_attr, basestring):
+                if not isinstance(tracker.identifier_attr, str):
                     raise ImproperlyConfigured(
                         'tracker tuple element \'identifier_attr\' must be a string. Got {0}'.format(tracker.identifier_attr))
             self._trackers.append(tracker)
