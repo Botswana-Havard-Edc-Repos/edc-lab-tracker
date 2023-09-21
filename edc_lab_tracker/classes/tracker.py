@@ -20,15 +20,17 @@ nullhandler = logger.addHandler(NullHandler())
 
 
 class LabTracker(object):
-    """An abstract class to track or maintain a history of subject's lab 
+    """An abstract class to track or maintain a history of subject's lab
     result value from both the lab_clinic_api models ands protocol scheduled model(s).
 
     Required class attributes to be defined on the subclass:
-        * resultitem_test_code: a tuple of test codes for reference to the :mod:`lab_clinic_api.result_item`.
+        * resultitem_test_code: a tuple of test codes
+        for reference to the :mod:`lab_clinic_api.result_item`.
           For example: ('ELISA', 'RELISA', 'DNAPCR')
         * tracker_test_code = a test code to use for results coming from a registered model.
           For example: 'HIV'
-        * group_name = a label to group all records in the history model related to this class instance.
+        * group_name = a label to group all records in the history
+        model related to this class instance.
           Must be unique for each type of value being tracked. For example: 'HIV'.
 
     Optional class attributes to be defined on the subclass:
@@ -36,7 +38,8 @@ class LabTracker(object):
           Use this attribute to include models from your app that capture values not captured in
           model :class:`lab_clinic_api.models.ResultItem`.
 
-        .. note:: If \'trackers\' is not defined, the class will just track values in :mod:`lab_clinic_api.result_item`.
+        .. note:: If \'trackers\' is not defined, the class will
+          just track values in :mod:`lab_clinic_api.result_item`.
 
     For example::
 
@@ -51,7 +54,8 @@ class LabTracker(object):
         def get_result_value(self, attr=None):
             retval = None
             if not attr in dir(self):
-                raise TypeError('Attribute {0} does not exist in model {1}'.format(attr, self._meta.object_name))
+                raise TypeError('Attribute {0} does not exist in model {1}'
+                .format(attr, self._meta.object_name))
             if attr == 'is_hiv_pos':
                 if self.is_hiv_pos.lower() == 'yes':
                     retval = 'POS'
@@ -93,7 +97,8 @@ class LabTracker(object):
         self._init_subject_identifier = subject_identifier
 
     def set_result_item_tracker(self):
-        """Sets the tracker for lab_clinic_api.result_item which is added by default to the list of trackers."""
+        """Sets the tracker for lab_clinic_api.result_item which is
+          added by default to the list of trackers."""
         self._result_item_tracker = TrackerNamedTpl(
             model_cls=get_model('lab_clinic_api', 'resultitem'),
             value_attr='result_item_value',
@@ -131,7 +136,8 @@ class LabTracker(object):
         return self._value
 
     def set_history(self, order_desc=None):
-        """Sets to an ordered HistoryModel queryset for this subject filtered for records on or before value_datetime."""
+        """Sets to an ordered HistoryModel queryset for this subject filtered 
+        for records on or before value_datetime."""
         self._history = None
         order_by = 'value_datetime'
         if order_desc:
@@ -143,7 +149,8 @@ class LabTracker(object):
         self._history = HistoryModel.objects.filter(**options).order_by(order_by)
 
     def get_history(self, value_datetime, order_desc=None):
-        """Returns an ordered HistoryModel queryset for this subject filtered for records on or before value_datetime."""
+        """Returns an ordered HistoryModel queryset for this subject filtered
+          for records on or before value_datetime."""
         if not order_desc:
             order_desc = True
         self.set_value_datetime(value_datetime)
@@ -152,19 +159,22 @@ class LabTracker(object):
         return self._history
 
     def get_history_as_list(self, reference_datetime=None):
-        """Returns all values on or before :attr:`reference_datetime` for a subject as a list in ascending chronological order."""
+        """Returns all values on or before :attr:`reference_datetime` for
+          a subject as a list in ascending chronological order."""
         if not reference_datetime:
             reference_datetime = self.get_value_datetime()
         queryset = self.get_history(reference_datetime, order_desc=False)
         return [qs.value for qs in queryset]
 
     def get_history_as_string(self, reference_datetime, mapped=None):
-        """Returns a subject's qualitative values joined as a string in ascending chronological order.
+        """Returns a subject's qualitative values joined as a string in 
+        ascending chronological order.
 
         Args:
             * mapped: if False do not attempt to use a display map (default=True).
 
-        If :attr:`mapped` is True and a display map is defined in :func:`get_display_map_prep`, the display map is
+        If :attr:`mapped` is True and a display map is defined in
+          :func:`get_display_map_prep`, the display map is
         inverted and a string of values is generated from the map."""
         if self._get_display_map():
             mapped = True
@@ -197,10 +207,12 @@ class LabTracker(object):
         self._subject_type = value or self.subject_type
         if not self._subject_type:
             raise ImproperlyConfigured(
-                'Attribute _subject_type may not be None. Specify at the class declaration (e.g. subject_type = \'infant\'. See tracker {0}'.format(self))
+                'Attribute _subject_type may not be None. Specify at the class declaration'
+                ' (e.g. subject_type = \'infant\'. See tracker {0}'.format(self))
         if not isinstance(self.subject_type, str):
             raise ImproperlyConfigured(
-                'Attribute _subject_type must be a string. Got {0}. Specify at the class declaration (e.g. subject_type = \'infant\''.format(self._subject_type))
+                'Attribute _subject_type must be a string. Got {0}. Specify'
+                ' at the class declaration (e.g. subject_type = \'infant\''.format(self._subject_type))
 
     def get_subject_type(self):
         if not self._subject_type:
@@ -222,17 +234,21 @@ class LabTracker(object):
                 tracker = TrackerNamedTpl(*tracker)
             if not issubclass(tracker.model_cls, models.Model):
                 raise ImproperlyConfigured(
-                    'tracker tuple element \'model_cls\' must be a Model class. Got {0}'.format(tracker.model_cls))
+                    'tracker tuple element \'model_cls\' must be a Model class.'
+                    'Got {0}'.format(tracker.model_cls))
             if not isinstance(tracker.value_attr, str):
                 raise ImproperlyConfigured(
-                    'tracker tuple element \'value_attr\' must be a string. Got {0}'.format(tracker.value_attr))
+                    'tracker tuple element \'value_attr\' must be a string.'
+                    'Got {0}'.format(tracker.value_attr))
             if not isinstance(tracker.datetime_attr, str):
                 raise ImproperlyConfigured(
-                    'tracker tuple element \'datetime_attr\' must be a string. Got {0}'.format(tracker.datetime_attr))
+                    'tracker tuple element \'datetime_attr\' must be a string.'
+                    'Got {0}'.format(tracker.datetime_attr))
             if tracker.identifier_attr:
                 if not isinstance(tracker.identifier_attr, str):
                     raise ImproperlyConfigured(
-                        'tracker tuple element \'identifier_attr\' must be a string. Got {0}'.format(tracker.identifier_attr))
+                        'tracker tuple element \'identifier_attr\' must be a string.'
+                        'Got {0}'.format(tracker.identifier_attr))
             self._trackers.append(tracker)
 
     def get_trackers(self):
@@ -255,7 +271,8 @@ class LabTracker(object):
         self._group_name = self.group_name
         if not self._group_name:
             raise ImproperlyConfigured(
-                'Attribute \'_group_name\' cannot be None. Set \'group_name\' as a class attribute in the class declaration')
+                'Attribute \'_group_name\' cannot be None. Set \'group_name\''
+                ' as a class attribute in the class declaration')
 
     def get_group_name(self):
         if not self._group_name:
@@ -308,12 +325,13 @@ class LabTracker(object):
                     for field in tracker.model_cls._meta.fields:
                         if isinstance(field, (ForeignKey, OneToOneField)):
                             if issubclass(field.rel.to, VisitModelMixin):
-                                query_string = '{visit_field}__appointment__registered_subject__subject_identifier'.format(
-                                    visit_field=field.name)
+                                query_string = '{visit_field}__appointment__registered_subject__'
+                                'subject_identifier'.format(visit_field=field.name)
                                 break
                 if not query_string:
                     raise TypeError(('Missing subject_identifier attribute or a relation to one. The model class {0} is'
-                                    ' not a subclass of VisitModelMixin and nor does it have a relation to RegisteredSubject.').format(tracker.model_cls._meta.object_name))
+                                    ' not a subclass of VisitModelMixin and nor does it have a'
+                                     'relation to RegisteredSubject.').format(tracker.model_cls._meta.object_name))
                 options = {query_string: self.get_subject_identifier()}
             if not options:
                 raise TypeError(
@@ -326,7 +344,8 @@ class LabTracker(object):
         return self._history_query_options.get(tracker)
 
     def update_history(self):
-        """Updates the HistoryModel with the subject's values found in any registered models and ResultItem."""
+        """Updates the HistoryModel with the subject's values found in
+          any registered models and ResultItem."""
         for tracker in self.get_trackers():
             options = self._get_history_query_options(tracker)
             for model_inst in tracker.model_cls.objects.filter(**options):
@@ -357,15 +376,21 @@ class LabTracker(object):
         return self._subject_identifier
 
     def _set_history_inst(self):
-        """Sets to the most recent history model instance relative to the value_datetime or to a default HistoryModel instance.
+        """Sets to the most recent history model instance relative to the 
+        value_datetime or to a default HistoryModel instance.
 
-        The default value is ignore and never reported unless a value does not exist. Make sure the default value is NOT a value
-        that might be reported. For example for HIV expect (POS, NEG, IND) so the default value cannot be POS or NEG or IND. Best to keep the
+        The default value is ignore and never reported unless a value does not exist.
+          Make sure the default value is NOT a value
+        that might be reported. For example for HIV expect 
+        (POS, NEG, IND) so the default value cannot be POS or NEG or IND. Best to keep the
         default value as (UNK) for unknown.
 
-        .. note:: the default value is excluded if a value exists. Some models may have option to report a value in more than one way.
-                  For example, a model might ask for the most recent pcr, elisa or last known value. If you report one of these three, such
-                  as the last know value (NEG), the other two will supply an UNK for that datetime. So the history for  that datetime is
+        .. note:: the default value is excluded if a value exists. Some models may have
+        option to report a value in more than one way.
+                  For example, a model might ask for the most recent pcr,
+                  elisa or last known value. If you report one of these three, such
+                  as the last know value (NEG), the other two will
+                  supply an UNK for that datetime. So the history for  that datetime is
                   NEG, UNK, UNK. The unknowns (UNK, UNK) should be ignored to report NEG."""
         # create a default instance
         self._history_inst = HistoryModel(
@@ -376,7 +401,8 @@ class LabTracker(object):
         if HistoryModel.objects.filter(subject_identifier=self.get_subject_identifier(),
                                        subject_type=self.get_subject_type(),
                                        group_name=self.get_group_name(),
-                                       value_datetime__lte=self.get_value_datetime()).exclude(value=self._get_default_value()).exists():
+                                       value_datetime__lte=self.get_value_datetime()).exclude(value=self._get_default_value()
+                                                                                              ).exists():
             # set to most recent relative to value_datetime
             # TODO: this may cause problems for value_datetime when queried by date (with no time)
             self._history_inst = HistoryModel.objects.filter(
