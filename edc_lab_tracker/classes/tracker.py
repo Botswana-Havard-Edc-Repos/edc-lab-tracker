@@ -325,13 +325,14 @@ class LabTracker(object):
                     for field in tracker.model_cls._meta.fields:
                         if isinstance(field, (ForeignKey, OneToOneField)):
                             if issubclass(field.rel.to, VisitModelMixin):
-                                query_string = '{visit_field}__appointment__registered_subject__'
-                                'subject_identifier'.format(visit_field=field.name)
+                                query_string = '{visit_field}__appointment__registered_subject__subject_identifier'.format(
+                                    visit_field=field.name)
                                 break
                 if not query_string:
-                    raise TypeError(('Missing subject_identifier attribute or a relation to one. The model class {0} is'
-                                    ' not a subclass of VisitModelMixin and nor does it have a'
-                                     'relation to RegisteredSubject.').format(tracker.model_cls._meta.object_name))
+                    raise TypeError(('Missing subject_identifier attribute or a relation to one.'
+                                     'The model class {0} is not a subclass of VisitModelMixin'
+                                     'and nor does it have a relation'
+                                    'to RegisteredSubject.').format(tracker.model_cls._meta.object_name))
                 options = {query_string: self.get_subject_identifier()}
             if not options:
                 raise TypeError(
@@ -376,12 +377,12 @@ class LabTracker(object):
         return self._subject_identifier
 
     def _set_history_inst(self):
-        """Sets to the most recent history model instance relative to the 
+        """Sets to the most recent history model instance relative to the
         value_datetime or to a default HistoryModel instance.
 
         The default value is ignore and never reported unless a value does not exist.
           Make sure the default value is NOT a value
-        that might be reported. For example for HIV expect 
+        that might be reported. For example for HIV expect
         (POS, NEG, IND) so the default value cannot be POS or NEG or IND. Best to keep the
         default value as (UNK) for unknown.
 
@@ -401,8 +402,8 @@ class LabTracker(object):
         if HistoryModel.objects.filter(subject_identifier=self.get_subject_identifier(),
                                        subject_type=self.get_subject_type(),
                                        group_name=self.get_group_name(),
-                                       value_datetime__lte=self.get_value_datetime()).exclude(value=self._get_default_value()
-                                                                                              ).exists():
+                                       value_datetime__lte=self.get_value_datetime()
+                                       ).exclude(value=self._get_default_value()).exists():
             # set to most recent relative to value_datetime
             # TODO: this may cause problems for value_datetime when queried by date (with no time)
             self._history_inst = HistoryModel.objects.filter(
