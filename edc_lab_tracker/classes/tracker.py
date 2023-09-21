@@ -24,7 +24,8 @@ nullhandler = logger.addHandler(NullHandler())
 
 
 class LabTracker(object):
-    """An abstract class to track or maintain a history of subject's lab result value from both the lab_clinic_api models ands protocol scheduled model(s).
+    """An abstract class to track or maintain a history of subject's lab 
+    result value from both the lab_clinic_api models ands protocol scheduled model(s).
 
     Required class attributes to be defined on the subclass:
         * resultitem_test_code: a tuple of test codes for reference to the :mod:`lab_clinic_api.result_item`.
@@ -411,24 +412,28 @@ class LabTracker(object):
             if display_map:
                 display_value = display_map.get(self.get_value(), None)
             if not display_value and not tracker.allow_null:
-                raise ValueError('Result value \'{0}\' did not match any value in the display map \'{1}\'.'.format(
-                    self.get_value(), display_map))
+                raise ValueError('Result value \'{0}\' did not match any value in the display '
+                                 'map \'{1}\'.'.format(self.get_value(), display_map))
         return display_value
 
     def _get_display_map(self):
         return self.get_display_map_prep()
 
     def get_display_map_prep(self):
-        """Returns a dictionary that may be used to map values for storage in the :class:`HistoryModel` to value formats used in :class:`ResultItem` model.
+        """Returns a dictionary that may be used to map values for storage in the :
+        class:`HistoryModel` to value formats used in :class:`ResultItem` model.
 
             Format {given this value: store this value}.
 
-            This is useful if update_prep adds results that are not described in the same format as the :class:`ResultItem` model.
+            This is useful if update_prep adds results that are not described
+              in the same format as the :class:`ResultItem` model.
 
             For example:
-                {'A': 'POS', 'B': NEG} will store POS and NEG given A, B. POS, NEG is how it is stored in the :class:`ResultItem` model.
+                {'A': 'POS', 'B': NEG} will store POS and NEG given A, B. POS, 
+                NEG is how it is stored in the :class:`ResultItem` model.
 
-            Also, the map is inverted to generate a string of values using this map returning 'AB' instead of 'POSNEG'.
+            Also, the map is inverted to generate a string of values 
+            using this map returning 'AB' instead of 'POSNEG'.
 
             Users may override."""
         return None
@@ -437,7 +442,8 @@ class LabTracker(object):
         self._tracked_test_codes = self.tracked_test_codes
         if not self._tracked_test_codes:
             raise ImproperlyConfigured(
-                'Class attribute \'tracked_test_codes\' may not be None. Should be a test code or tuple of test codes. Set \'tracked_test_codes\' in the class declaration for {0}'.format(self))
+                'Class attribute \'tracked_test_codes\' may not be None. Should be a test code or'
+                'tuple of test codes. Set \'tracked_test_codes\' in the class declaration for {0}'.format(self))
         if not isinstance(self._tracked_test_codes, (list, tuple)):
             self._tracked_test_codes = (self._tracked_test_codes, )
 
